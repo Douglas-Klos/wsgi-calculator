@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import unittest
 import subprocess
 import http.client
@@ -112,6 +113,21 @@ class WebTestCase(unittest.TestCase):
         self.assertEqual(200, response.getcode())
 
         self.assertIn(str(result).encode(), response.read())
+
+    def test_modulus(self):
+        """
+        A call to /modulus/a/b yields a%b, for a % b = 0
+        """
+
+        a = random.randint(2, 10)
+        b = random.randint(100, 1000)
+
+        path = "/modulus/{}/{}".format(a, b)
+
+        response = self.get_response(path)
+        self.assertEqual(200, response.getcode())
+
+        self.assertIn(str(a % b).encode(), response.read())
 
     def test_index_instructions(self):
         """
