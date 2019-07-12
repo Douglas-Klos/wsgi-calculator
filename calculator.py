@@ -87,43 +87,47 @@ def modulus(*args):
     return str(functools.reduce(operator.mod, list(map(float, args))))
 
 
-
 def root(*args):
     """ Returns basic root page """
+    # In production I'd probably just use static text instead of the extra calls.
+    #   There really just here for fun and learning.
     return """
 <style>
-th, td{
-    padding: 5px;
+th, td, h1{
     text-align: center;
 }
+th, td{
+    padding: 5px;
+}
 </style>
-<h1 style="text-align: center">WSGI Calculator:</h1>
+<h1>WSGI Calculator:</h1>
 <table align="center">
   <tr>
     <th>Examples</th>
   </tr>
   <tr bgcolor=lightgrey><td>
-    /add/23/42         => 65<br>
-    /add/23/42/10      => 75<br>
+    <a href="http://localhost:8080/add/23/42">/add/23/42</a> => """ + add(*(23, 42)) + """<br>
+    <a href="http://localhost:8080/add/23/42/10">/add/23/42/10</a> => """ + add(*(23, 42, 10)) + """<br>
   </td></tr>
   <tr><td>
-    /subtract/23/42    => -19<br>
-    /subtract/23/42/10 => -29<br>
+    <a href="http://localhost:8080/subtract/23/42">/subtract/23/42</a> => """ + subtract(*(23, 42)) + """<br>
+    <a href="http://localhost:8080/subtract/23/42/10">/subtract/23/42/10</a> => """ + subtract(*(23, 42, 10)) + """<br>
   </td></tr>
   <tr bgcolor=lightgrey><td>
-    /multiply/3/5      => 15<br>
-    /divide/22/11      => 2<br>
+    <a href="http://localhost:8080/divide/22/11">/divide/22/11</a> => """ + divide(*(22, 11)) + """<br>
+    <a href="http://localhost:8080/divide/22/11/.5">/divide/22/11/.5</a> => """ + divide(*(22, 11, .5)) + """<br>
   </td></tr>
   <tr><td>
-    /divide/22/11/.5   => 4<br>
-    /multiply/3/5/10   => 150<br>
+    <a href="http://localhost:8080/multiply/3/5">/multiply/3/5</a> => """ + multiply(*(3, 5)) + """<br>
+    <a href="http://localhost:8080/multiply/3/5/10">/multiply/3/5/10</a> => """ + multiply(*(3, 5, 10)) + """<br>
   </td></tr>
   <tr bgcolor=lightgrey><td>
-    /modulus/81/9      => 0<br>
-    /modulus/88/45/20  => 3<br>
+    <a href="http://localhost:8080/modulus/81/9">/modulus/81/9</a> => """ + modulus(*(81, 9)) + """<br>
+    <a href="http://localhost:8080/modulus/88/45/20">/modulus/88/45/20</a> => """ + modulus(*(88, 45, 20)) + """<br>
   </td></tr>
 </table>
 """
+
 
 def resolve_path(path):
     """
@@ -139,7 +143,6 @@ def resolve_path(path):
         Return two values: a callable and an iterable of arguments.
 
     """
-    print(f"entering resolve_path")
     funcs = {
         '': root,
         'add': add,
@@ -189,7 +192,6 @@ def main():
     from wsgiref.simple_server import make_server
     srv = make_server('localhost', 8080, application)
     srv.serve_forever()
-
 
 
 if __name__ == '__main__':
