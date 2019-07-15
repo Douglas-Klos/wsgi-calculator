@@ -57,19 +57,28 @@ from loguru import logger
 def add(*args):
     """ Returns a STRING with the sum of the arguments """
     logger.debug("Entering add")
-    return str(functools.reduce(operator.add, list(map(float, args))))
+    try:
+        return str(functools.reduce(operator.add, list(map(float, args))))
+    except ValueError:
+        return error_message(*args)
 
 
 def subtract(*args):
     """ Returns a STRING with the difference of the arguments """
     logger.debug("Entering subtract")
-    return str(functools.reduce(operator.sub, list(map(float, args))))
+    try:
+        return str(functools.reduce(operator.sub, list(map(float, args))))
+    except ValueError:
+        return error_message(*args)
 
 
 def multiply(*args):
     """ Returns a STRING with the product of the arguments """
     logger.debug("Entering multiply")
-    return str(functools.reduce(operator.mul, list(map(float, args))))
+    try:
+        return str(functools.reduce(operator.mul, list(map(float, args))))
+    except ValueError:
+        return error_message(*args)
 
 
 def divide(*args):
@@ -77,14 +86,33 @@ def divide(*args):
     logger.debug("Entering divide")
     try:
         return str(functools.reduce(operator.truediv, list(map(float, args))))
+    except ValueError:
+        return error_message(*args)
     except ZeroDivisionError:
-        return "Divide by 0 error"
+        return "Zero Division Error"
 
 
 def modulus(*args):
-    """ Returns a STRING with the product of the arguments """
+    """ Returns a STRING with the remainder of the arguments """
     logger.debug("Entering modulus")
-    return str(functools.reduce(operator.mod, list(map(float, args))))
+    try:
+        return str(functools.reduce(operator.mod, list(map(float, args))))
+    except ZeroDivisionError:
+        return "Zero Division Error"
+    except ValueError:
+        return error_message(*args)
+
+
+def error_message(*args):
+    """ Displays the problematic arguments """
+    logger.debug("Entering error_message")
+    body = 'Bad values:<br>'
+    for arg in args:
+        try:
+            float(arg)
+        except ValueError:
+            body += f"{arg}<br>"
+    return body
 
 
 def root(*args):
