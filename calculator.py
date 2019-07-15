@@ -1,57 +1,27 @@
 #!/usr/bin/env python3
 """
-For your homework this week, you'll be creating a wsgi application of
-your own.
+I did these in a functional style using map / filter / reduce because I was bored.
+  Yes I understand the code and that it might be better to do it in a more traditional
+  style, but this was more fun.  We can also do strings like:
 
-You'll create an online calculator that can perform several operations.
+  http://localhost:8080/add/10/10/10/10 => 40.
+  http://localhost:8080/subtract/40/10/5/5 => 20.
 
-You'll need to support:
+While it has been linted, I didn't include pylint disables for things as _most_ were
+from instructor code.  My pylint gripes were from line too long, but considering it's
+HTML content, I'm not too worried about it.  Otherwise, the code should follow
+proper pepage.
 
-  * Addition
-  * Subtractions
-  * Multiplication
-  * Division
-
-Your users should be able to send appropriate requests and get back
-proper responses. For example, if I open a browser to your wsgi
-application at `http://localhost:8080/multiple/3/5' then the response
-body in my browser should be `15`.
-
-Consider the following URL/Response body pairs as tests:
-
-```
-  http://localhost:8080/multiply/3/5   => 15
-  http://localhost:8080/add/23/42      => 65
-  http://localhost:8080/subtract/23/42 => -19
-  http://localhost:8080/divide/22/11   => 2
-  http://localhost:8080/               => <html>Here's how to use this page...</html>
-```
-
-To submit your homework:
-
-  * Fork this repository (Session04).
-  * Edit this file to meet the homework requirements.
-  * Your script should be runnable using `$ python calculator.py`
-  * When the script is running, I should be able to view your
-    application in my browser.
-  * I should also be able to see a home page (http://localhost:8080/)
-    that explains how to perform calculations.
-  * Commit and push your changes to your fork.
-  * Submit a link to your Session04 fork repository!
-
+Also added a Modulus operation because why not...
 """
 
 import functools
 import operator
 from loguru import logger
 
-# I did these in a functional style because I was bored.
-#   Yes I understand the code and that it might be better
-#   to do it in a more traditional style, but this is more fun.
-#
-# We can also do strings like
-#   http://localhost:8080/add/10/10/10/10 => 40.
-#   http://localhost:8080/subtract/40/10/5/5 => 20.
+
+# These are all the same aside from the operator call.  Probably a way to combine all
+#   into one function with a lookup dictionary...
 
 
 def add(*args):
@@ -89,7 +59,7 @@ def divide(*args):
     except ValueError:
         return error_message(*args)
     except ZeroDivisionError:
-        return "Zero Division Error"
+        return "<h2>Zero Division Error</h2>"
 
 
 def modulus(*args):
@@ -97,28 +67,57 @@ def modulus(*args):
     logger.debug("Entering modulus")
     try:
         return str(functools.reduce(operator.mod, list(map(float, args))))
-    except ZeroDivisionError:
-        return "Zero Division Error"
     except ValueError:
         return error_message(*args)
+    except ZeroDivisionError:
+        return "<h2>Zero Division Error</h2>"
+
+
+def filter_func(arg):
+    """ Attempts to float the argument, returns False if float, True otherwise """
+    try:
+        float(arg)
+        return False
+    except ValueError:
+        return True
 
 
 def error_message(*args):
     """ Displays the problematic arguments """
     logger.debug("Entering error_message")
-    body = 'Bad values:<br>'
-    for arg in args:
-        try:
-            float(arg)
-        except ValueError:
-            body += f"{arg}<br>"
+
+    body = "<h2>Bad values:</h2><ul><li>"
+    body += '</li><li>'.join(filter(filter_func, args)) + "</li></ul>"
     return body
+
+    # Other version...
+    # body = "<h2>Bad values:</h2><ul><li>"
+    # body += '<li>'.join([x + "</li>" for x in args if filter_func(x)]) + "</ul>"
+    # return body
+
+    # One liner...
+    # return "<h2>Bad values:</h2><ul><li>" + '<li>'.join([x + "</li>" for x in args if filter_func(x)]) + "</ul>"
+
+
+# # Original function before I  went all filter on it...
+# def error_message(*args):
+#     """ Displays the problematic arguments """
+#     logger.debug("Entering error_message")
+
+#     body = 'Bad values:<br>'
+#     for arg in args:
+#         try:
+#             float(arg)
+#         except ValueError:
+#             body += f"{arg}<br>"
+#     return body
 
 
 def root(*args):
     """ Returns basic root page """
     # In production I'd probably just use static text instead of the extra calls.
-    #   There really just here for fun and learning.
+    #   There really just here for fun and learning.  And yes they'd clearly break
+    #   if this was run anywhere but on localhost.  Again, just for fun.
     return """
 <style>
 th, td, h1{
