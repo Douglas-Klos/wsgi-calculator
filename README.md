@@ -1,10 +1,19 @@
 # WSGI Calculator
 
-Your assignment is to create a WSGI calculator that you can use to add, subtract, multiply, or divide two numbers.
+I did these in a functional style using map / filter / reduce because I was bored.
+  Yes I understand the code and that it might be better to do it in a more traditional
+  style, but this was more fun.  We can also do strings like:
 
-You'll use the calculator by visiting an address like: [http://localhost:8080/multiply/3/5](http://localhost:8080/multiply/3/5). Once you've completed the assignment, if you were to run the program and visit this page then you would expect to see a page in your browser with the text "15".
+  * http://localhost:8080/add/10/10/10/10 => 40.
+  * http://localhost:8080/subtract/40/10/5/5 => 20.
 
-You'll also have to create one more page: an index page at the address http://localhost:8080/ with some text instructions that explain (in just a few sentences) how to use the site.
+While it has been linted, I didn't include pylint disables for things as _most_ were
+from instructor code.  My pylint gripes were from line too long, but considering it's
+HTML content, I'm not too worried about it.  Otherwise, the code should follow
+proper pepage.
+
+Also added a Modulus operation because why not.  Added an extra test for it as well.
+
 
 ## How to Know When You're Done
 
