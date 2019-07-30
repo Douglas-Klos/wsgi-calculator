@@ -20,57 +20,39 @@ import operator
 from loguru import logger
 
 
-# These are all the same aside from the operator call.  Probably a way to combine all
-#   into one function with a lookup dictionary...
+def operator_func(op_func, args):
+    logger.debug(f"Entering {op_func.__name__}")
+    try:
+        return str(functools.reduce(op_func, list(map(float, args))))
+    except ValueError:
+        return error_message(*args)
+    except ZeroDivisionError:
+        return "<h2>Zero Division Error</h2>"
 
 
 def add(*args):
     """ Returns a STRING with the sum of the arguments """
-    logger.debug("Entering add")
-    try:
-        return str(functools.reduce(operator.add, list(map(float, args))))
-    except ValueError:
-        return error_message(*args)
+    return operator_func(operator.add, args)
 
 
 def subtract(*args):
     """ Returns a STRING with the difference of the arguments """
-    logger.debug("Entering subtract")
-    try:
-        return str(functools.reduce(operator.sub, list(map(float, args))))
-    except ValueError:
-        return error_message(*args)
+    return operator_func(operator.sub, args)
 
 
 def multiply(*args):
     """ Returns a STRING with the product of the arguments """
-    logger.debug("Entering multiply")
-    try:
-        return str(functools.reduce(operator.mul, list(map(float, args))))
-    except ValueError:
-        return error_message(*args)
+    return operator_func(operator.mul, args)
 
 
 def divide(*args):
     """ Returns a STRING with the quotient of the arguments """
-    logger.debug("Entering divide")
-    try:
-        return str(functools.reduce(operator.truediv, list(map(float, args))))
-    except ValueError:
-        return error_message(*args)
-    except ZeroDivisionError:
-        return "<h2>Zero Division Error</h2>"
+    return operator_func(operator.truediv, args)
 
 
 def modulus(*args):
     """ Returns a STRING with the remainder of the arguments """
-    logger.debug("Entering modulus")
-    try:
-        return str(functools.reduce(operator.mod, list(map(float, args))))
-    except ValueError:
-        return error_message(*args)
-    except ZeroDivisionError:
-        return "<h2>Zero Division Error</h2>"
+    return operator_func(operator.mod, args)
 
 
 def filter_func(arg):
